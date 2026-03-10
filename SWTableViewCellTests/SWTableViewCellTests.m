@@ -1,16 +1,16 @@
-#import <Specta/Specta.h>
-#import <Expecta/Expecta.h>
-#import <FBSnapshotTestCase/FBSnapshotTestCase.h>
-#import <Expecta+Snapshots/EXPMatchers+FBSnapshotTest.h>
-#import <OCMock/OCMock.h>
+#import <XCTest/XCTest.h>
 #import "SWTableViewCell.h"
 
-SpecBegin(SWTableViewCell)
+@interface SWTableViewCellTests : XCTestCase
+@property (nonatomic, strong) NSArray *rightButtons;
+@property (nonatomic, strong) NSArray *leftButtons;
+@end
 
-__block NSArray *rightButtons;
-__block NSArray *leftButtons;
+@implementation SWTableViewCellTests
 
-before(^{
+- (void)setUp {
+    [super setUp];
+    
     NSMutableArray *rightUtilityButtons = [NSMutableArray new];
     [rightUtilityButtons sw_addUtilityButtonWithColor:
      [UIColor colorWithRed:0.78f green:0.78f blue:0.8f alpha:1.0]
@@ -18,9 +18,8 @@ before(^{
     [rightUtilityButtons sw_addUtilityButtonWithColor:
      [UIColor colorWithRed:1.0f green:0.231f blue:0.188 alpha:1.0f]
                                                 title:@"Delete"];
-
-    rightButtons = rightUtilityButtons;
     
+    self.rightButtons = rightUtilityButtons;
     
     NSMutableArray *leftUtilityButtons = [NSMutableArray new];
     
@@ -37,39 +36,33 @@ before(^{
      [UIColor colorWithRed:0.55f green:0.27f blue:0.07f alpha:1.0]
                                                 icon:[UIImage imageNamed:@"list.png"]];
     
-    leftButtons = leftUtilityButtons;
+    self.leftButtons = leftUtilityButtons;
+}
+
+- (void)testInitWithCellStyleDefault {
+    SWTableViewCell *cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    XCTAssertNotNil(cell);
+}
+
+- (void)testInitWithCellStyleSubtitle {
+    SWTableViewCell *cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
+    XCTAssertNotNil(cell);
+}
+
+- (void)testShouldHaveTwoRightButtons {
+    SWTableViewCell *cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    [cell setRightUtilityButtons:self.rightButtons WithButtonWidth:44.0f];
+    [cell setLeftUtilityButtons:self.leftButtons WithButtonWidth:44.0f];
     
-});
+    XCTAssertEqual(cell.rightUtilityButtons.count, 2);
+}
 
-describe(@"init", ^{
-    it(@"should init with cell style UITableViewStyleDefault", ^{
-        SWTableViewCell *cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-        expect(cell).toNot.beNil;
-    });
+- (void)testShouldHaveFourLeftButtons {
+    SWTableViewCell *cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+    [cell setRightUtilityButtons:self.rightButtons WithButtonWidth:44.0f];
+    [cell setLeftUtilityButtons:self.leftButtons WithButtonWidth:44.0f];
     
-    it(@"should init with cell style UITableViewStyleSubtitle", ^{
-        SWTableViewCell *cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
-        expect(cell).toNot.beNil;
-    });
-});
+    XCTAssertEqual(cell.leftUtilityButtons.count, 4);
+}
 
-describe(@"buttons", ^{
-    __block SWTableViewCell *cell;
-    
-    before(^{
-        cell = [[SWTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-        [cell setRightUtilityButtons:rightButtons WithButtonWidth:44.0f];
-        [cell setLeftUtilityButtons:leftButtons WithButtonWidth:44.0f];
-    });
-
-    it(@"should have two right buttons", ^{
-        expect(cell.rightUtilityButtons.count).to.equal(2);
-    });
-    
-    it(@"should have four left buttons", ^{
-        expect(cell.leftUtilityButtons.count).to.equal(4);
-    });
-});
-
-
-SpecEnd
+@end
