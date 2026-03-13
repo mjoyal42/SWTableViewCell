@@ -11,6 +11,7 @@
 #import "SWCellScrollView.h"
 #import "SWLongPressGestureRecognizer.h"
 #import "SWUtilityButtonTapGestureRecognizer.h"
+#import "SWUtilityButtonView.h"
 #import "NSMutableArray+SWUtilityButtons.h"
 
 @class SWTableViewCell;
